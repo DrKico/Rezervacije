@@ -9,7 +9,7 @@ const Login = ({ setAuth }) => {
     event.preventDefault();
     try {
       const response = await axios.post('http://localhost:5000/api/auth/login', { username, password });
-      setAuth(response.data);
+      console.log(response);
       alert('Login successful');
     } catch (error) {
       console.error('Login failed', error);
