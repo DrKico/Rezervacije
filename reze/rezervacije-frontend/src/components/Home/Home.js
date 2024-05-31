@@ -1,30 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { sendWebSocketMessage, subscribeToMessages } from '../api/websocket';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 import './Home.css';
 
 const Home = () => {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    subscribeToMessages((data) => {
-      if (data.type === 'EVENTS') {
-        console.log('Events received:', data.events); // Add logging here
-        setEvents(data.events);
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/events');
+        setEvents(response.data);
+      } catch (error) {
+        console.error('Error fetching events:', error);
       }
-    });
+    };
 
-    sendWebSocketMessage({ type: 'GET_EVENTS' });
+    fetchEvents();
   }, []);
 
   return (
-    <div className="home-container">
-      <h1>Upcoming Events</h1>
-      <div className="events-grid">
-        {events.map(event => (
-          <div key={event.id} className="event-card">
+    <div className="home">
+      <h1>Latest Events</h1>
+      <div className="events">
+        {events.map((event, index) => (
+          <div key={index} className="event-card">
             <h2>{event.name}</h2>
-            <p>{event.description}</p>
             <p>{new Date(event.date).toLocaleString()}</p>
+            <p>{event.description}</p>
+            <Link to={`/event/${event.id}`}>View Details</Link>
           </div>
         ))}
       </div>

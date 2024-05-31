@@ -1,82 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import InteractiveMap from '../Map/InteractiveMap';
+import React, { useState, useContext, useEffect } from 'react';
+import axios from '../../services/api';
+import { AuthContext } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-const CreateReservation = () => {
-  const [tableNumber, setTableNumber] = useState('');
-  const [numberOfGuests, setNumberOfGuests] = useState('');
-  const [userId, setUserId] = useState('');
-  const [eventId, setEventId] = useState('');
-  const [events, setEvents] = useState([]);
-  const [availableStanding, setAvailableStanding] = useState(40);
-  const [availableSeats, setAvailableSeats] = useState({});
+const CreateEvent = () => {
+  const [name, setName] = useState('');
+  const [date, setDate] = useState('');
+  const [description, setDescription] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      const response = await axios.get('/api/events');
-      setEvents(response.data);
-    };
-    fetchEvents();
-  }, []);
-
-  const handleTableSelect = async (tableId) => {
-    // Provjera da li je stol već rezerviran
-    const response = await axios.get(`/api/reservations/table/${tableId}`);
-    if (response.data.length > 0) {
-      alert('This table is already reserved');
-    } else {
-      setTableNumber(tableId);
+    if (user?.role !== 'admin') {
+      navigate('/');
     }
-  };
+  }, [user, navigate]);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      await axios.post(
-        '/api/reservations',
-        { tableNumber, numberOfGuests, userId, eventId },
-        { headers: { Authorization: localStorage.getItem('token') } }
-      );
-      alert('Reservation created successfully');
-      setTableNumber('');
-      setNumberOfGuests('');
-      setUserId('');
-      setEventId('');
+      await axios.post('/events', { name, date, description, imageUrl });
+      alert('Event created successfully!');
     } catch (error) {
-      alert('Failed to create reservation');
+      alert('Error creating event.');
     }
   };
 
   return (
-    <div className="container">
-      <h2>Create Reservation</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="number"
-          placeholder="Number of Guests"
-          value={numberOfGuests}
-          onChange={(e) => setNumberOfGuests(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="User ID"
-          value={userId}
-          onChange={(e) => setUserId(e.target.value)}
-        />
-        <select value={eventId} onChange={(e) => setEventId(e.target.value)}>
-          <option value="">Select Event</option>
-          {events.map((event) => (
-            <option key={event.id} value={event.id}>
-              {event.name} - {new Date(event.date).toLocaleDateString()}
-            </option>
-          ))}
-        </select>
-        <InteractiveMap onTableSelect={handleTableSelect} />
-        <p>Selected Table: {tableNumber}</p>
-        <button type="submit">Create Reservation</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>Name</label>
+        <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+      </div>
+      <div>
+        <label>Date</label>
+        <input type="datetime-local" value={date} onChange={(e) => setDate(e.target.value)} required />
+      </div>
+      <div>
+        <label>Description</label>
+        <textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
+      </div>
+      <div>
+        <label>Image URL</label>
+        <input type="text" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
+      </div>
+      <button type="submit">Create Event</button>
+    </form>
   );
 };
 
-export default CreateReservation;
+export default CreateEvent;

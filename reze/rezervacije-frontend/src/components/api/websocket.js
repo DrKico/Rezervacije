@@ -13,6 +13,7 @@ socket.onerror = (error) => {
 };
 
 const sendWebSocketMessage = (message) => {
+  console.log('Sending message to server:', message);
   if (socket.readyState === WebSocket.OPEN) {
     socket.send(JSON.stringify(message));
   } else {
@@ -25,9 +26,9 @@ const sendWebSocketMessage = (message) => {
 const subscribeToMessages = (callback) => {
   socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
-    console.log('Received data from server:', data); // Add logging here
+    console.log('Received data from server:', data);
     callback(data);
   };
 };
 
-export { sendWebSocketMessage, subscribeToMessages };
+export { sendWebSocketMessage, subscribeToMessages, socket };

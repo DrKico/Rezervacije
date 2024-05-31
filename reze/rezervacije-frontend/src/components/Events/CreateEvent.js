@@ -1,40 +1,47 @@
 import React, { useState } from 'react';
-import { sendWebSocketMessage, subscribeToMessages } from '/xampp/htdocs/reze/rezervacije-frontend/src/components/api/websocket';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 const CreateEvent = () => {
   const [name, setName] = useState('');
   const [date, setDate] = useState('');
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    sendWebSocketMessage({
-      type: 'CREATE_EVENT',
-      name,
-      date,
-      description,
-      imageUrl
-    });
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      await axios.post('/api/events', { name, date, description, imageUrl });
+      alert('Event created successfully');
+      navigate('/');
+    } catch (error) {
+      console.error('Create event failed', error);
+      alert('Create event failed');
+    }
   };
-
-  useEffect(() => {
-    subscribeToMessages((data) => {
-      if (data.type === 'EVENT_CREATED') {
-        // Handle event creation success
-        console.log('Event created:', data.event);
-      }
-    });
-  }, []);
 
   return (
     <div>
-      <h1>Create Event</h1>
+      <h2>Create Event</h2>
       <form onSubmit={handleSubmit}>
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" required />
-        <input type="datetime-local" value={date} onChange={(e) => setDate(e.target.value)} required />
-        <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" required></textarea>
-        <input type="text" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="Image URL" />
-        <button type="submit">Create</button>
+        <div>
+          <label>Name:</label>
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+        </div>
+        <div>
+          <label>Date:</label>
+          <input type="datetime-local" value={date} onChange={(e) => setDate(e.target.value)} />
+        </div>
+        <div>
+          <label>Description:</label>
+          <textarea value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
+        </div>
+        <div>
+          <label>Image URL:</label>
+          <input type="text" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
+        </div>
+        <button type="submit">Create Event</button>
       </form>
     </div>
   );

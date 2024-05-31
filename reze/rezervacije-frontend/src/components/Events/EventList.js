@@ -1,33 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { sendWebSocketMessage, subscribeToMessages } from  '/xampp/htdocs/reze/rezervacije-frontend/src/components/api/websocket';
+import React, { useState, useEffect } from 'react';
+import { sendWebSocketMessage, subscribeToMessages } from '../api/websocket';
 
 const EventList = () => {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    subscribeToMessages((message) => {
-      console.log('Message received:', message);
-      if (message.type === 'events') {
-        setEvents(message.data);
+    subscribeToMessages((data) => {
+      if (data.type === 'events') {
+        setEvents(data.data);
       }
     });
 
     sendWebSocketMessage({ type: 'GET_EVENTS' });
   }, []);
 
+  if (events.length === 0) {
+    return <p>No events available</p>;
+  }
+
   return (
     <div>
-      {events.length > 0 ? (
-        events.map((event) => (
-          <div key={event.id}>
-            <h3>{event.name}</h3>
-            <p>{event.description}</p>
-            <p>{event.date}</p>
-          </div>
-        ))
-      ) : (
-        <p>No events found</p>
-      )}
+      <h1>Events</h1>
+      <ul>
+        {events.map(event => (
+          <li key={event.id}>
+            {event.name} - {new Date(event.date).toLocaleString()}
+            <button onClick={() => window.location.href=`/reserve/${event.id}`}>Reserve</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
