@@ -1,0 +1,30 @@
+.header {
+    background-color: #333;
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  .header nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .header nav ul li {
+    margin: 0 1rem;
+  }
+  
+  .header nav ul li a, .header nav ul li button {
+    color: #FFD700;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .header nav ul li button {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  

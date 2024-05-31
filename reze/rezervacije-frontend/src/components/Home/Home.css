@@ -1,0 +1,36 @@
+.home-container {
+    text-align: center;
+    padding: 20px;
+    color: #ffffff;
+  }
+  
+  .events-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .event-card {
+    background-color: #282c34;
+    border-radius: 10px;
+    padding: 20px;
+    width: 250px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+  }
+  
+  .event-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .event-card h2 {
+    color: #61dafb;
+    margin: 0 0 10px 0;
+  }
+  
+  .event-card p {
+    color: #ffffff;
+    margin: 5px 0;
+  }
+  

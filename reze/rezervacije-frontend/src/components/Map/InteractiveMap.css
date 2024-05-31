@@ -1,0 +1,45 @@
+.interactive-map {
+    position: relative;
+    width: 100%;
+    height: 800px; /* Adjust height as needed */
+    background: url('//image1.png') no-repeat center center;
+    background-size: contain;
+  }
+  
+  .map-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .table {
+    position: absolute;
+    width: 30px; 
+    height: 30px; 
+    border: 2px solid #fff;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .vip {
+    background-color: pink;
+  }
+  
+  .regular {
+    background-color: lightblue;
+  }
+  
+  .standing {
+    background-color: grey;
+  }
+  
+  /* Pozicionirajte stolove prema layoutu kluba */
+  #VIP-1 { top: 50px; left: 100px; }
+  #VIP-2 { top: 100px; left: 150px; }
+  /* Dodajte ostale pozicije za stolove */
+  .standing-tables .table {
+    width: 20px;
+    height: 20px;
+    margin: 5px;
+  }
+  
